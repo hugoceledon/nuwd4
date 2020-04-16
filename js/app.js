@@ -84,6 +84,9 @@ function removeChar(toRemove, str) {
     return str.replace(reg, '')
 }
 
+var operation = ""
+var operators = []
+
 function sendKey(key) {
     if (((display.innerHTML != "ERR") && (display.innerHTML != "DIV0")) || key == "on") {
         if (isNumber(key)) {
@@ -105,23 +108,40 @@ function sendKey(key) {
                         display.innerHTML = "-" + display.innerHTML
                     }
                 }
+                oldValue = parseFloat(display.innerHTML)
             } else if (key == "sqrt") {
+                if (display.innerHTML == "") {
+                    const err = true
+                }
                 var number = parseFloat(display.innerHTML)
-                if (number >= 0) {
+                if ((number >= 0) && !err) {
                     var sqrt = Math.sqrt(number).toString().substring(0, 9)
                 } else {
                     sqrt = "ERR"
                 }
                 display.innerHTML = sqrt
             } else if (key == "divide") {
+                operators.push(key)
+                operation += String(display.innerHTML) + "#"
                 display.innerHTML = ""
             } else if (key == "multiply") {
+                operators.push(key)
+                operation += String(display.innerHTML) + "#"
                 display.innerHTML = ""
             } else if (key == "substract") {
+                operators.push(key)
+                operation += String(display.innerHTML) + "#"
                 display.innerHTML = ""
             } else if (key == "add") {
+                operators.push(key)
+                operation += String(display.innerHTML) + "#"
                 display.innerHTML = ""
             } else if (key == "equals") {
+                operation += String(display.innerHTML)
+                const op = operation.split("#");
+                console.log(op)
+                console.log(operators)
+                    // isFinite
                 display.innerHTML = "RESULTADO"
             } else if (key == "point") {
                 if (!display.innerHTML.includes(".")) {
