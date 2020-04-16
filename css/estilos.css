@@ -48,7 +48,7 @@ body {
 
 .teclado img {
     width: 22%;
-    height: 62.91px;
+    height: 65.05px;
 }
 
 @font-face {
@@ -81,10 +81,11 @@ body {
     align-items: flex-start;
 }
 
-#mas {
+#add {
     width: 90%;
-    height: 100%;
+    height: 102%;
     margin-left: 10px;
+    margin-top: -2px;
 }
 
 .teclado .row .col1 img {
