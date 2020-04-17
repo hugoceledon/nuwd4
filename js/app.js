@@ -1,198 +1,161 @@
-var buttons = {
-    btnOn: {
-        element: document.getElementById("on"),
-        value: "on"
+var Calculator = {
+    init: function() {
+        this.display = document.getElementById("display")
+        this.resetValues()
+        this.createButtons()
+        this.animateButtons()
     },
-    btnSign: {
-        element: document.getElementById("sign"),
-        value: "sign"
+    resetValues: function() {
+        this.numbers = []
+        this.operators = []
     },
-    btnSqrt: {
-        element: document.getElementById("sqrt"),
-        value: "sqrt"
-    },
-    btnDivide: {
-        element: document.getElementById("divide"),
-        value: "divide"
-    },
-    btnMultiply: {
-        element: document.getElementById("multiply"),
-        value: "multiply"
-    },
-    btnSubstract: {
-        element: document.getElementById("substract"),
-        value: "substract"
-    },
-    btnAdd: {
-        element: document.getElementById("add"),
-        value: "add"
-    },
-    btnEquals: {
-        element: document.getElementById("equals"),
-        value: "equals"
-    },
-    btnPoint: {
-        element: document.getElementById("point"),
-        value: "point"
-    },
-    Btn0: {
-        element: document.getElementById("0"),
-        value: 0
-    },
-    btn1: {
-        element: document.getElementById("1"),
-        value: 1
-    },
-    btn2: {
-        element: document.getElementById("2"),
-        value: 2
-    },
-    btn3: {
-        element: document.getElementById("3"),
-        value: 3
-    },
-    btn4: {
-        element: document.getElementById("4"),
-        value: 4
-    },
-    btn5: {
-        element: document.getElementById("5"),
-        value: 5
-    },
-    btn6: {
-        element: document.getElementById("6"),
-        value: 6
-    },
-    btn7: {
-        element: document.getElementById("7"),
-        value: 7
-    },
-    btn8: {
-        element: document.getElementById("8"),
-        value: 8
-    },
-    btn9: {
-        element: document.getElementById("9"),
-        value: 9
-    }
-}
-
-var display = document.getElementById("display")
-
-function removeChar(toRemove, str) {
-    let reg = new RegExp(toRemove)
-    return str.replace(reg, '')
-}
-
-var operation = ""
-var operators = []
-
-function sendKey(key) {
-    if (((display.innerHTML != "ERR") && (display.innerHTML != "DIV0")) || key == "on") {
-        if (isNumber(key)) {
-            if (display.innerHTML.length < 8) {
-                if (display.innerHTML == 0) {
-                    display.innerHTML = key;
-                } else {
-                    display.innerHTML += key;
-                }
-            }
-        } else {
-            if (key == "on") {
-                display.innerHTML = 0;
-            } else if (key == "sign") {
-                if (display.innerHTML.includes("-")) {
-                    display.innerHTML = removeChar("-", display.innerHTML)
-                } else {
-                    if ((display.innerHTML != 0) && (display.innerHTML != "")) {
-                        display.innerHTML = "-" + display.innerHTML
-                    }
-                }
-                oldValue = parseFloat(display.innerHTML)
-            } else if (key == "sqrt") {
-                if (display.innerHTML == "") {
-                    const err = true
-                }
-                var number = parseFloat(display.innerHTML)
-                if ((number >= 0) && !err) {
-                    var sqrt = Math.sqrt(number).toString().substring(0, 9)
-                } else {
-                    sqrt = "ERR"
-                }
-                display.innerHTML = sqrt
-            } else if (key == "divide") {
-                operators.push(key)
-                operation += String(display.innerHTML) + "#"
-                display.innerHTML = ""
-            } else if (key == "multiply") {
-                operators.push(key)
-                operation += String(display.innerHTML) + "#"
-                display.innerHTML = ""
-            } else if (key == "substract") {
-                operators.push(key)
-                operation += String(display.innerHTML) + "#"
-                display.innerHTML = ""
-            } else if (key == "add") {
-                operators.push(key)
-                operation += String(display.innerHTML) + "#"
-                display.innerHTML = ""
-            } else if (key == "equals") {
-                operation += String(display.innerHTML)
-                const op = operation.split("#");
-                console.log(op)
-                console.log(operators)
-                    // isFinite
-                display.innerHTML = "RESULTADO"
-            } else if (key == "point") {
-                if (!display.innerHTML.includes(".")) {
-                    display.innerHTML += "."
+    createButtons: function() {
+        this.buttons = {}
+        var Elements = document.getElementsByClassName("tecla")
+        for (var i = 0; i < Elements.length; i++) {
+            var id = Elements[i].id
+            if (isNaN(parseFloat(id))) {
+                this.buttons["btn" + capitalize(id)] = {
+                    element: document.getElementById(id),
+                    value: id
                 }
             } else {
-                console.log("You should never reach here!")
+                this.buttons["btn" + id] = {
+                    element: document.getElementById(id.toString()),
+                    value: parseFloat(id)
+                }
             }
+        }
+    },
+    animateButtons: function() {
+        var self = this
+        for (const prop in this.buttons) {
+            const btn = this.buttons[prop].element
+            const val = this.buttons[prop].value
+            btn.addEventListener(
+                "mouseup",
+                function() {
+                    self.btnNormal(btn);
+                    self.sendKey(val);
+                });
+            btn.addEventListener(
+                "mouseleave",
+                function() {
+                    self.btnNormal(btn)
+                });
+            btn.addEventListener(
+                "mousedown",
+                function() {
+                    self.btnSmall(btn)
+                });
+            btn.addEventListener(
+                "mouseenter",
+                function() {
+                    self.btnBig(btn)
+                });
+            btn.addEventListener(
+                "mouseout",
+                function() {
+                    self.btnNormal(btn)
+                });
+        }
+    },
+    btnSmall: function(btn) {
+        btn.style.transform = "scale(0.9)";
+    },
+    btnNormal: function(btn) {
+        btn.style.transform = "scale(1)";
+    },
+    btnBig: function(btn) {
+        btn.style.transform = "scale(1.02)";
+    },
+    sendKey: function(key) {
+        if (((this.display.innerHTML != "ERR") && (this.display.innerHTML != "DIV-0")) || key == "on") {
+            if (isNumber(key)) {
+                if (this.display.innerHTML.length < 8) {
+                    if ((this.display.innerHTML == 0) && (this.display.innerHTML != "0.")) {
+                        this.display.innerHTML = key;
+                    } else {
+                        this.display.innerHTML += key;
+                    }
+                }
+            } else {
+                if (key == "on") {
+                    this.display.innerHTML = 0;
+                } else if (key == "sign") {
+                    if (this.display.innerHTML.includes("-")) {
+                        this.display.innerHTML = removeChar("-", this.display.innerHTML)
+                    } else {
+                        if ((this.display.innerHTML != 0) && (this.display.innerHTML != "")) {
+                            this.display.innerHTML = "-" + this.display.innerHTML
+                        }
+                    }
+                } else if (key == "sqrt") {
+                    const err = false
+                    if (this.display.innerHTML == "") {
+                        const err = true
+                    }
+                    var number = parseFloat(this.display.innerHTML)
+                    if ((number >= 0) && !err) {
+                        var sqrt = Math.sqrt(number).toString().substring(0, 9)
+                    } else {
+                        sqrt = "ERR"
+                    }
+                    this.display.innerHTML = sqrt
+                    this.resetValues()
+                } else if (key == "point") {
+                    if (!this.display.innerHTML.includes(".")) {
+                        if (this.display.innerHTML == "") {
+                            this.display.innerHTML = "0"
+                        }
+                        this.display.innerHTML += "."
+                    }
+                } else if (key == "equals") {
+                    if (this.display.innerHTML != "") {
+                        this.numbers.push(parseFloat(this.display.innerHTML))
+                        const Result = this.calculate()
+                        this.display.innerHTML = Result.toString().substring(0, 9)
+                        this.resetValues()
+                    }
+                } else {
+                    if (this.display.innerHTML != "") {
+                        this.operators.push(key)
+                        this.numbers.push(parseFloat(this.display.innerHTML))
+                        this.display.innerHTML = ""
+                    } else {
+                        this.operators.pop()
+                        this.operators.push(key)
+                    }
+                }
+            }
+        }
+    },
+    calculate: function() {
+        var self = this
+        var a = this.numbers[0]
+        for (var i = 1; i < this.numbers.length; i++) {
+            var b = this.numbers[i]
+            var a = self.operate(this.operators[i - 1], a, b)
+            if (!isFinite(a)) {
+                return "DIV-0"
+            }
+        }
+        return a
+    },
+    operate: function(operator, a, b) {
+        switch (operator) {
+            case "multiply":
+                return a * b
+            case "divide":
+                return a / b
+            case "add":
+                return a + b
+            case "substract":
+                return a - b
+            default:
+                return "ERR"
         }
     }
 }
 
-function btnSmall(btn) {
-    btn.style.transform = "scale(0.9)";
-}
-
-function btnNormal(btn) {
-    btn.style.transform = "scale(1)";
-}
-
-function btnBig(btn) {
-    btn.style.transform = "scale(1.02)";
-}
-
-for (const prop in buttons) {
-    const btn = buttons[prop].element
-    const val = buttons[prop].value
-    btn.addEventListener(
-        "mouseup",
-        function() {
-            btnNormal(btn);
-            sendKey(val);
-        });
-    btn.addEventListener(
-        "mouseleave",
-        function() {
-            btnNormal(btn)
-        });
-    btn.addEventListener(
-        "mousedown",
-        function() {
-            btnSmall(btn)
-        });
-    btn.addEventListener(
-        "mouseenter",
-        function() {
-            btnBig(btn)
-        });
-    btn.addEventListener(
-        "mouseout",
-        function() {
-            btnNormal(btn)
-        });
-}
+Calculator.init()
