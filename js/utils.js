@@ -1,3 +1,5 @@
+// VALIDATORS
+
 function isString(value) {
     return typeof value === 'string' || value instanceof String;
 }
@@ -46,4 +48,16 @@ function isDate(value) {
 
 function isSymbol(value) {
     return typeof value === 'symbol';
+}
+
+// STRING TRANSFORMERS
+
+function removeChar(toRemove, str) {
+    let reg = new RegExp(toRemove)
+    return str.replace(reg, '')
+}
+
+const capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
 }
