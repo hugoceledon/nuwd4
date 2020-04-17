@@ -73,7 +73,7 @@ var Calculator = {
         if (((this.display.innerHTML != "ERR") && (this.display.innerHTML != "DIV-0")) || key == "on") {
             if (isNumber(key)) {
                 if (this.display.innerHTML.length < 8) {
-                    if ((this.display.innerHTML == 0) && (this.display.innerHTML != "0.")) {
+                    if ((this.display.innerHTML === "0") && (!this.display.innerHTML.includes("0."))) {
                         this.display.innerHTML = key;
                     } else {
                         this.display.innerHTML += key;
